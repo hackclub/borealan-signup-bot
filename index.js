@@ -1,6 +1,7 @@
 require('dotenv').config()
 const { App } = require('@slack/bolt');
 const sshpk = require('sshpk');
+const { execFileSync } = require("node:child_process")
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -9,7 +10,7 @@ const app = new App({
 });
 
 (async () => {
-    async function createUserAccount({ name, username, sshkey }) {
+    async function createUserAccount({ name, username, sshkey, ack }) {
         /*
         You have two options to message the user:
         
@@ -28,7 +29,6 @@ const app = new App({
         */
     }
     app.view('register', async ({ ack, body, client, logger, view }) => {
-        await ack()
         let values = view.state.values;
         let name, username, sshkey;
 
@@ -44,7 +44,7 @@ const app = new App({
             }
         }
 
-        await createUserAccount({ name, username, sshkey })
+        await createUserAccount({ name, username, sshkey, ack })
 
 
     })
